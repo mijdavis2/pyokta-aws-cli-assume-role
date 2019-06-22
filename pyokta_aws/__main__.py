@@ -24,7 +24,7 @@ from pyokta_aws.cli import dispatch
 def main():
     try:
         return dispatch(sys.argv[1:])
-    except (exceptions.TwineException, requests.exceptions.HTTPError) as exc:
+    except (exceptions.PyOktaAwsException, requests.exceptions.HTTPError) as exc:
         return '{}: {}'.format(exc.__class__.__name__, exc.args[0])
 
 

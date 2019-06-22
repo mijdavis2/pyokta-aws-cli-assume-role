@@ -13,3 +13,60 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+from __future__ import absolute_import, division, print_function
+from __future__ import unicode_literals
+
+import argparse
+import pkg_resources
+import setuptools
+
+import requests
+
+import pyokta_aws
+
+
+def _registered_commands(group='pyokta_aws.registered_commands'):
+    registered_commands = pkg_resources.iter_entry_points(group=group)
+    return {c.name: c for c in registered_commands}
+
+
+def list_dependencies_and_versions():
+    return [
+        ('requests', requests.__version__),
+        ('setuptools', setuptools.__version__),
+    ]
+
+
+def dep_versions():
+    return ', '.join(
+        '{}: {}'.format(*dependency)
+        for dependency in list_dependencies_and_versions()
+    )
+
+
+def dispatch(argv):
+    registered_commands = _registered_commands()
+    parser = argparse.ArgumentParser(prog="pyokta_aws")
+    parser.add_argument(
+        "--version",
+        action="version",
+        version="%(prog)s version {} ({})".format(
+            pyokta_aws.__version__,
+            dep_versions(),
+        ),
+    )
+    parser.add_argument(
+        "command",
+        choices=registered_commands.keys(),
+    )
+    parser.add_argument(
+        "args",
+        help=argparse.SUPPRESS,
+        nargs=argparse.REMAINDER,
+    )
+
+    args = parser.parse_args(argv)
+
+    main = registered_commands[args.command].load()
+
+    return main(args.args)
