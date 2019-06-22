@@ -1,3 +1,5 @@
+from configobj import ConfigObj
+import os.path
 from pyokta_aws import utils
 
 
@@ -66,6 +68,7 @@ class Settings(object):
             "-p", "--profile",
             action=utils.EnvironmentDefault,
             env="OKTA_AWS_PROFILE",
+            default='default',
             required=False,
             help="AWS profile to use for authentication. "
                  "Example: myorg.okta.com "
@@ -156,9 +159,35 @@ class Settings(object):
     def from_argparse(cls, args):
         """Generate the Settings from parsed arguments."""
         settings = vars(args)
+        settings['config_file'] = os.path.expanduser(settings['config_file'])
         settings['interactive'] = not settings.pop('non_interactive')
+        if settings['config_file'].lower() is not 'none':
+            settings = cls.load_config_settings(settings)
         if settings['verbose']:
-            print("\nUsing the following settings...")
-            for x, y in settings.items():
-                print('{:.<19s}: {}'.format(x, str(y) if x is not 'password' else '<redacted>'))
+            cls.print_settings(settings)
         return cls(**settings)
+
+    @staticmethod
+    def load_config_settings(settings):
+        """Load empty settings from config_file."""
+        config_file = settings['config_file']
+        profile = settings['profile']
+        if not os.path.isfile(config_file):
+            raise Exception('Config file "{}" does not exist.'.format(config_file))
+        if settings['verbose']:
+            print('Loading settings from config file "{}"...'.format(config_file))
+        conf_settings = ConfigObj(config_file).get(profile)
+        if not conf_settings:
+            msg = 'Profile "{}" is not in config file "{}".'.format(profile, config_file)
+            raise Exception(msg)
+        for x, y in settings.items():
+            if not y:
+                settings[x] = conf_settings.get(x)
+        return settings
+
+    @staticmethod
+    def print_settings(settings):
+        """Print all settings. Password is redacted."""
+        print("Using the following settings...")
+        for x, y in settings.items():
+            print('{:.<18s}: {}'.format(x, str(y) if x is not 'password' else '<redacted>'))
