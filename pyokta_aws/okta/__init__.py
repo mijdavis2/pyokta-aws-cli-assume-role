@@ -13,22 +13,3 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import argparse
-from pyokta_aws.okta.api import Api
-from pyokta_aws import settings
-
-
-def authenticate(settings):
-    api = Api(
-        org_url=settings.okta_org,
-        usr=settings.username,
-        pw=settings.password
-    )
-
-
-def main(args):
-    parser = argparse.ArgumentParser(prog='pyokta-aws auth')
-    settings.Settings.register_argparse_arguments(parser)
-    args = parser.parse_args(args)
-    auth_settings = settings.Settings.from_argparse(args)
-    return authenticate(auth_settings)
