@@ -46,7 +46,7 @@ def dep_versions():
 
 def dispatch(argv):
     registered_commands = _registered_commands()
-    parser = argparse.ArgumentParser(prog="pyokta_aws")
+    parser = argparse.ArgumentParser(prog="pyokta-aws")
     parser.add_argument(
         "--version",
         action="version",

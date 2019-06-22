@@ -1,7 +1,7 @@
 import setuptools
 import pyokta_aws
 
-with open("README.md", "r") as fh:
+with open('README.md', 'r') as fh:
     long_description = fh.read()
 
 setuptools.setup(
@@ -11,21 +11,24 @@ setuptools.setup(
     author_email=pyokta_aws.__email__,
     description=pyokta_aws.__summary__,
     long_description=long_description,
-    long_description_content_type="text/markdown",
+    long_description_content_type='text/markdown',
     url=pyokta_aws.__url__,
     packages=setuptools.find_packages(),
     classifiers=[
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+        'Programming Language :: Python :: 3',
+        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
     ],
-    python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*",
+    python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*',
     install_requires=[
-        "pkginfo >= 1.5.0",
-        "requests >= 2.22.0",
-        "setuptools",
+        'pkginfo >= 1.5.0',
+        'requests >= 2.22.0',
+        'setuptools',
     ],
     py_modules=['pyokta_aws'],
     entry_points={
+        'pyokta_aws.registered_commands': [
+            'auth = pyokta_aws.commands.auth:main'
+        ],
         'console_scripts': [
             'pyokta-aws = pyokta_aws.__main__:main'
         ]
