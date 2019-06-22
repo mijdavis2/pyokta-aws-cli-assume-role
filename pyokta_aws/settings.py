@@ -176,7 +176,7 @@ class Settings(object):
         settings = vars(args)
         settings['config_file'] = os.path.expanduser(settings['config_file'])
         settings['interactive'] = not settings.pop('non_interactive')
-        if settings['config_file'].lower() is not 'none':
+        if settings['config_file'].lower() != 'none':
             settings = cls.load_config_settings(settings)
         if settings['verbose']:
             cls.print_settings(settings)
@@ -205,4 +205,4 @@ class Settings(object):
         """Print all settings. Password is redacted."""
         print("Using the following settings...")
         for x, y in settings.items():
-            print('{:.<18s}: {}'.format(x, str(y) if x is not 'password' else '<redacted>'))
+            print('{:.<18s}: {}'.format(x, str(y) if x != 'password' else '<redacted>'))

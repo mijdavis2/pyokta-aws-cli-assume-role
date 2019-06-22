@@ -24,6 +24,7 @@ def authenticate(settings):
         usr=settings.username,
         pw=settings.password
     )
+    print(api.__dict__())
 
 
 def main(args):

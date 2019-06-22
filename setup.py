@@ -18,10 +18,11 @@ setuptools.setup(
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
     ],
-    python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*',
+    python_requires='>=3.5',
     install_requires=[
         'pkginfo >= 1.5.0',
         'requests >= 2.22.0',
+        'configobj >= 5.0.6',
         'setuptools',
     ],
     py_modules=['pyokta_aws'],

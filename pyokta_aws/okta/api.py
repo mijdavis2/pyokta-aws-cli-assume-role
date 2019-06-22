@@ -64,5 +64,4 @@ class Api:
 
     def authn(self):
         resp = self._authenticate_primary()
-        import ipdb
-        ipdb.set_trace()
+        print(resp)
