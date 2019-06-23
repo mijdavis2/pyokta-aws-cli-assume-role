@@ -12,10 +12,11 @@ WIP - This project is still in rapid initial development phase.
 - [x] pypi package
 - [x] cli and settings loaders
 - [x] support multi-tenant settings
-- [x] ci (testing)
+- [x] ci (testing) :construction_worker:
 - [ ] okta auth
 - [ ] okta 2fa (sms)
 - [ ] aws auth via okta auth
-- [ ] ci/cd (deploy to pypi)
-- [ ] aws role list selection in interactive mode
+- [ ] windows support :checkered_flag:
+- [ ] ci/cd (deploy to pypi)?
+- [ ] aws role list selection in interactive mode :children_crossing:
 - [ ] okta 2fa (others)
