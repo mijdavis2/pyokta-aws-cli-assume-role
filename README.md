@@ -13,10 +13,11 @@ WIP - This project is still in rapid initial development phase.
 - [x] cli and settings loaders
 - [x] support multi-tenant settings
 - [x] ci (testing) :construction_worker:
-- [ ] okta auth
-- [ ] okta 2fa (sms)
+- [x] okta auth
+- [x] okta 2fa (sms)
 - [ ] aws auth via okta auth
 - [ ] windows support :checkered_flag:
 - [ ] ci/cd (deploy to pypi)?
 - [ ] aws role list selection in interactive mode :children_crossing:
 - [ ] okta 2fa (others)
+- [ ] use context managers to auto-cancel okta verifications on cancel

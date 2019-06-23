@@ -61,6 +61,34 @@ class Api:
         else:
             resp.raise_for_status()
 
+    def verify_via_mfa(self, data):
+        if data.get('status') != 'MFA_REQUIRED':
+            return
+        state_token = data['stateToken']
+        factors = [x for x in data['_embedded']['factors']]
+        if len(factors) > 1:
+            factor = self.select_mfa_method(factors)
+        else:
+            factor = factors[0]
+        if factor.get('_links'):
+            if factor['_links'].get('verify'):
+                data = {
+                    'stateToken': state_token
+                }
+                resp = self.session.post(
+                    url=factor['_links']['verify']['href'],
+                    json=data
+                )
+                data = resp.json()
+                state_token = data.get('stateToken')
+        mfa_code = input('Enter {} code:'.format(factor['factorType']))
+        url = data['_links']['next']['href']
+        data = {
+            'stateToken': state_token,
+            'passCode': mfa_code
+        }
+        return self.session.post(url=url, json=data)
+
     def authn(self):
         resp = self._authenticate_primary()
-        print(resp)
+        return self.verify_via_mfa(resp.json())
