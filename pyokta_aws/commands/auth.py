@@ -20,11 +20,11 @@ from pyokta_aws import settings
 
 def authenticate(settings):
     api = Api(
-        org_url=settings.okta_org,
+        okta_org=settings.okta_org,
         usr=settings.username,
         pw=settings.password
     )
-    print(api.__dict__())
+    api.authn()
 
 
 def main(args):

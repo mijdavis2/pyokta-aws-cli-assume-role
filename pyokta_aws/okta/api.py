@@ -13,50 +13,49 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-from os import getenv
+from getpass import getpass
 
 import requests
 
 
 class OktaEndpoints(object):
     def __init__(self, url):
-        self.authn = f"{url}/api/v1/authn"
-        self.sms_challenge = f"{url}/api/v1/authn/factors/" + "{factorId}/verify"
+        self.authn = f"https://{url}/api/v1/authn"
+        self.sms_challenge = f"https://{url}/api/v1/authn/factors/" + "{factorId}/verify"
 
 
 class Api:
     def __init__(self, okta_org: str, usr: str, pw: str):
         self.okta_org = okta_org
         self.okta: OktaEndpoints = OktaEndpoints(self.okta_org)
+        self.usr = usr
+        self.pw = pw
         self.interactive: bool = True
         self.session: requests.Session = requests.session()
-        self.session.headers['Accept']: str = 'application/json'
-        self.session.headers['Content-Type']: str = 'application/json'
+        self.session.headers['Accept'] = 'application/json'
+        self.session.headers['Content-Type'] = 'application/json'
 
         self.factorId: str = ""
 
     def _get_credentials(self):
-        usr = getenv('OKTA_USERNAME')
-        passwd = getenv('OKTA_PASSWORD')
-        if usr:
-            print(f'Okta username: {usr}')
-        if not usr or not passwd:
+        if self.usr:
+            print(f'Okta username: {self.usr}')
+        if not self.usr or not self.pw:
             if self.interactive:
-                usr = usr if usr else input("Okta username: ")
-                passwd = passwd if passwd else input("Okta password: ")
-        return usr, passwd
+                self.usr = self.usr if self.usr else input("Okta username: ")
+                self.pw = self.pw if self.pw else getpass("Okta password: ")
 
     def _authenticate_primary(self):
-        usr, passwd = self._get_credentials()
+        self._get_credentials()
         data = {
-            "username": usr,
-            "password": passwd,
+            "username": self.usr,
+            "password": self.pw,
             "options": {
                 "multiOptionalFactorEnroll": True,
                 "warnBeforePasswordExpired": True,
             }
         }
-        resp = self.session.get(url=self.okta.authn, data=data)
+        resp = self.session.post(url=self.okta.authn, json=data)
         if resp.status_code == requests.codes.ok:
             return resp
         else:
