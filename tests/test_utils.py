@@ -13,7 +13,18 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+import builtins
+
+import mock
+from pyokta_aws import utils
 
 
-def test_tox():
-    assert True is True
+# TODO: Also test unsupported answer.
+# Not sure how to do that for a recursive runction.
+def test_let_user_pick():
+    with mock.patch.object(builtins, 'input', lambda _: '1'):
+        msg = "Pick one:"
+        options = ['a', 'b']
+        pick = utils.let_user_pick(msg, options)
+        assert pick == 1
+        assert options[pick - 1] == 'a'

@@ -14,9 +14,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from getpass import getpass
-from pyquery import PyQuery
 
 import requests
+from pyquery import PyQuery
+
+from pyokta_aws.utils import let_user_pick
 
 
 class OktaEndpoints:
@@ -61,8 +63,15 @@ class Api:
 
     @staticmethod
     def _select_mfa_method(factors):
-        print("Factor selection not yet implementd. Using first mfa factor method")
-        return factors[0]
+        print('-' * 15)
+        msg = ('Multiple MFA methods registered.\n'
+               'Note: "push" is not currently supported...')
+        methods = [x['factorType'] for x in factors]
+        pick = let_user_pick(msg, methods)
+        method = [x for x in factors if x['factorType'] == methods[pick - 1]][0]
+        if method == 'push':
+            raise Exception('MFA method "push" is not yet implemented.')
+        return method
 
     def _verify_via_mfa(self, data):
         if data.get('status') != 'MFA_REQUIRED':

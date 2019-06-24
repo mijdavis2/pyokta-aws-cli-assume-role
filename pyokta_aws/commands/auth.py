@@ -80,6 +80,7 @@ def authenticate(settings):
         secret=creds['SecretAccessKey'],
         session_token=creds['SessionToken']
     )
+    print('SUCCESS!')
 
 
 def main(args):
