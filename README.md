@@ -1,21 +1,42 @@
-# pyokta-aws-cli-assume-role
+<div align="center">
 
-| branch | status |
-|:-------|:-------|
-| master |[![build](https://travis-ci.org/mijdavis2/pyokta-aws-cli-assume-role.svg?branch=master)](https://travis-ci.org/mijdavis2/pyokta-aws-cli-assume-role)|
+<img src="assets/pyokta-aws-cli-assume-role.png" width=300\>
 
+<h3>pyokta-aws-cli-assume-role</h3>
 
-Okta AWS CLI Assume Role Tool for Humans
+[![build](https://travis-ci.org/mijdavis2/pyokta-aws-cli-assume-role.svg?branch=master)](https://travis-ci.org/mijdavis2/pyokta-aws-cli-assume-role) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-If you login to AWS via Okta SAML federation and assume an iam role, this tool will help you easily achieve pragmatic access to AWS via the aws cli. Also helpful for running **terraform** and **packer**
+---
 
-> Replacement for [okta-aws-cli-assume-role]
+Okta-AWS auth tool for humans
+</div>
+
+If you login to AWS via Okta SAML federation and assume an iam role, this tool will help you easily achieve pragmatic access to AWS via the aws cli. Also helpful for running **terraform** and **packer**.
+
+> Replaces [okta-aws-cli-assume-role]
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+# Table of Contents
+
+- [Why a new tool?](#why-a-new-tool)
+- [Getting Started](#getting-started)
+  - [Requirements](#requirements)
+  - [Install](#install)
+  - [Configure](#configure)
+- [Usage](#usage)
+- [How it works](#how-it-works)
+- [Roadmap](#roadmap)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 > NOTICE: Though this project works in a limited capacity, keep in mind that this project is still in rapid development phase. No security audits have been performed.
 
-## Why a new tool?
+# Why a new tool?
 
-My cohorts and I wanted a tool that was easy to install and use, easy to configure, easy to improve and maintain, and supported multi-tenancy.
+My cohorts and I wanted a tool that was easy to install and use, easy to configure, easy to improve and maintain, and that supported multi-tenancy.
+
+# Getting Started
 
 ## Requirements
 
@@ -55,7 +76,7 @@ sts_duration = 14400
 - *password*: `<it is recommended to keep this blank>`
 - *sts_duration*: Duration (in seconds) to keep token alive. Max duration found in `IAM > Identity Providers > <provider_id>`.
 
-## Usage
+# Usage
 
 Basic usage `pyokta-aws auth --profile <aws_profile>`.
 
@@ -63,13 +84,13 @@ See `pyokta-aws --help` for all supported usage.
 
 Configuration can be input via cli args, env vars, or the pyokta-aws config file described above. Configuration takes presidence as follows: `cli args > env vars > config file`.
 
-## How it works
+# How it works
 
 The main `pyokta-aws auth` command authenticates with Okta and aquires a temporary set of credentials from AWS STS. These credentials get written to you local aws credentials file. This allows the awscli and other tools like `terraform` and `packer` to run as expected.
 
 > Before auth happens, your local aws cli config profile is updated via the profile and region set in the pyokta-aws config. Treat you pyokta-aws config file as the single source of truth for aws cli config when authenticating with Okta.
 
-## Roadmap:
+# Roadmap
 - [x] pypi package
 - [x] cli and settings loaders
 - [x] support multi-tenant settings
