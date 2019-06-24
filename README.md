@@ -17,7 +17,7 @@ WIP - This project is still in rapid initial development phase.
 - [x] okta 2fa (sms)
 - [x] get saml from okta app
 - [x] aws auth via okta auth
-- [ ] setup aws config if not previously setup
+- [x] setup aws config if not previously setup
 - [ ] windows support :checkered_flag:
 - [ ] ci/cd (deploy to pypi)?
 - [ ] aws role list selection in interactive mode :children_crossing:

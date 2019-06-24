@@ -36,18 +36,26 @@ def auth_with_saml(saml: str, aws_role_to_assume: str, aws_idp: str, sts_duratio
 
 def update_aws_credentials_file(profile: str, key_id: str, secret: str, session_token: str):
     aws_creds_file = os.path.expanduser('~/.aws/credentials')
-    if not os.path.isdir(os.path.expanduser('~/.aws')):
-        raise Exception('Aws config dir not found. Is awscli installed?')
     if not os.path.isfile(aws_creds_file):
         print('No aws credentials file found. Creating one for you...')
-        with open(aws_creds_file, None):
-            pass
     conf = ConfigObj(aws_creds_file)
     if not conf.get(profile):
         conf[profile] = {}
     conf[profile]['aws_access_key_id'] = key_id
     conf[profile]['aws_secret_access_key'] = secret
     conf[profile]['aws_session_token'] = session_token
+    conf.write()
+
+
+def setup_aws_config_if_required(profile: str, region: str):
+    aws_config_file = os.path.expanduser('~/.aws/config')
+    if not os.path.isfile(aws_config_file):
+        print('No aws config file found. Creating one for you...')
+    conf = ConfigObj(aws_config_file)
+    profile = 'profile {}'.format(profile)
+    if not conf.get(profile):
+        conf[profile] = {}
+    conf[profile]['region'] = region
     conf.write()
 
 
@@ -75,8 +83,13 @@ def authenticate(settings):
 
 
 def main(args):
+    if not os.path.isdir(os.path.expanduser('~/.aws')):
+        raise Exception('"~/.aws" dir not found. Is the awscli installed?')
     parser = argparse.ArgumentParser(prog='pyokta-aws auth')
     settings.Settings.register_argparse_arguments(parser)
     args = parser.parse_args(args)
     auth_settings = settings.Settings.from_argparse(args)
+    setup_aws_config_if_required(
+        profile=auth_settings.profile, region=auth_settings.region
+    )
     return authenticate(auth_settings)

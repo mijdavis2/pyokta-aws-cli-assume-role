@@ -39,6 +39,7 @@ class Settings(object):
     @utils.no_positional(allow_self=True)
     def __init__(self,
                  profile=None,
+                 region=None,
                  username=None, password=None,
                  okta_org=None,
                  okta_aws_app_url=None,
@@ -70,6 +71,7 @@ class Settings(object):
             Show verbose output.
         """
         self.profile = profile
+        self.region = region
         self.username = username
         self.password = password
         self.okta_org = okta_org
@@ -94,6 +96,16 @@ class Settings(object):
                  "(Can also be set via %(env)s environment variable.)",
         )
         parser.add_argument(
+            "-r", "--region",
+            action=utils.EnvironmentDefault,
+            env="OKTA_AWS_REGION",
+            default='us-east-1',
+            required=False,
+            help="AWS region to use for profile. "
+                 "This will override your aws config region for the given profile "
+                 "(Can also be set via %(env)s environment variable.)",
+        )
+        parser.add_argument(
             "-o", "--okta-org",
             action=utils.EnvironmentDefault,
             env="OKTA_ORG",
@@ -112,7 +124,7 @@ class Settings(object):
                  "(Can also be set via %(env)s environment variable.)",
         )
         parser.add_argument(
-            "-r", "--aws-role-to-assume",
+            "-ar", "--aws-role-to-assume",
             action=utils.EnvironmentDefault,
             env="OKTA_AWS_ROLE_TO_ASSUME",
             required=False,
