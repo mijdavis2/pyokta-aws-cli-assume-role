@@ -23,7 +23,7 @@ from pyokta_aws import settings
 from pyokta_aws.okta.api import Api as OktaApi
 
 
-def auth_with_saml(saml: str, aws_role_to_assume: str, aws_idp: str, sts_duration: str):
+def aws_auth_with_saml(saml: str, aws_role_to_assume: str, aws_idp: str, sts_duration: str):
     data = {
         'SAMLAssertion': saml,
         'RoleArn': aws_role_to_assume,
@@ -60,14 +60,14 @@ def setup_aws_config_if_required(profile: str, region: str):
 
 
 def authenticate(settings):
-    api = OktaApi(
+    okta = OktaApi(
         okta_org=settings.okta_org,
         usr=settings.username,
         pw=settings.password,
         app_url=settings.okta_aws_app_url
     )
-    saml = api.authn()
-    resp = auth_with_saml(
+    saml = okta.get_saml_via_auth()
+    resp = aws_auth_with_saml(
         saml=saml,
         aws_role_to_assume=settings.aws_role_to_assume,
         aws_idp=settings.aws_idp,
@@ -83,8 +83,9 @@ def authenticate(settings):
 
 
 def main(args):
-    if not os.path.isdir(os.path.expanduser('~/.aws')):
-        raise Exception('"~/.aws" dir not found. Is the awscli installed?')
+    aws_dir = os.path.isdir(os.path.expanduser('~/.aws'))
+    if not aws_dir:
+        raise Exception('"{}" dir not found. Is the awscli installed?'.format(aws_dir))
     parser = argparse.ArgumentParser(prog='pyokta-aws auth')
     settings.Settings.register_argparse_arguments(parser)
     args = parser.parse_args(args)
