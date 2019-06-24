@@ -16,5 +16,8 @@ build: clean
 test: build
 	tox
 
+deploy: test
+	twine upload dist/*
+
 install: build
 	pip install -e ./
