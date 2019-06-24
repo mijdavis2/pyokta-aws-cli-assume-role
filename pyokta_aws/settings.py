@@ -42,6 +42,8 @@ class Settings(object):
                  username=None, password=None,
                  okta_org=None,
                  okta_aws_app_url=None,
+                 aws_role_to_assume=None,
+                 aws_idp=None,
                  sts_duration=None,
                  config_file='~/.pyokta_aws/config',
                  verbose=False,
@@ -72,6 +74,8 @@ class Settings(object):
         self.password = password
         self.okta_org = okta_org
         self.okta_aws_app_url = okta_aws_app_url
+        self.aws_role_to_assume = aws_role_to_assume
+        self.aws_idp = aws_idp
         self.sts_duration = sts_duration
         self.config_file = config_file
         self.verbose = verbose
@@ -112,10 +116,20 @@ class Settings(object):
             action=utils.EnvironmentDefault,
             env="OKTA_AWS_ROLE_TO_ASSUME",
             required=False,
-            help="The AWS role to assume. "
+            help="The AWS role ARN to assume. "
                  "Consists of aws account id, role, and okta user "
                  "(username or email depending on okta app setup). "
-                 "Example: <aws_accnt_id>/AWSAdmin/<okta_user> "
+                 "Example: <aws_accnt_id>:role/<role_name> "
+                 "(Can also be set via %(env)s environment variable.)",
+        )
+        parser.add_argument(
+            "-idp", "--aws-idp",
+            action=utils.EnvironmentDefault,
+            env="OKTA_AWS_IDP_ARN",
+            required=False,
+            help="The AWS identity provider. "
+                 "Found in IAM > Identity Providers in AWS console. "
+                 "Example: <aws_accnt_id>:saml-provider/<provider_name> "
                  "(Can also be set via %(env)s environment variable.)",
         )
         parser.add_argument(
@@ -178,6 +192,13 @@ class Settings(object):
         settings['interactive'] = not settings.pop('non_interactive')
         if settings['config_file'].lower() != 'none':
             settings = cls.load_config_settings(settings)
+        iam_string = 'arn:aws:iam::'
+        settings['aws_role_to_assume'] = '{}{}'.format(
+            iam_string, settings['aws_role_to_assume'].replace(iam_string, '')
+        )
+        settings['aws_idp'] = '{}{}'.format(
+            iam_string, settings['aws_idp'].replace(iam_string, '')
+        )
         if settings['verbose']:
             cls.print_settings(settings)
         return cls(**settings)

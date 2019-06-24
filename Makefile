@@ -13,5 +13,8 @@ clean:
 build: clean
 	python setup.py sdist bdist_wheel
 
+test: build
+	tox
+
 install: build
 	pip install -e ./

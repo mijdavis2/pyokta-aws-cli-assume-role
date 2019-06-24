@@ -19,7 +19,7 @@ from pyquery import PyQuery
 import requests
 
 
-class OktaEndpoints(object):
+class OktaEndpoints:
     def __init__(self, okta_org, app_url):
         self.authn = "https://{}/api/v1/authn".format(okta_org)
         self.app_saml = "{}?onetimetoken=".format(app_url)

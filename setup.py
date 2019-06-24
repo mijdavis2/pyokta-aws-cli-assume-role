@@ -20,10 +20,12 @@ setuptools.setup(
     ],
     python_requires='>=3.5',
     install_requires=[
-        'pkginfo >= 1.5.0',
-        'requests >= 2.22.0',
+        'boto3 >= 1.9.174',
         'configobj >= 5.0.6',
         'pyquery >= 1.4.0',
+        'requests >= 2.22.0',
+        # packaging reqs
+        'pkginfo >= 1.5.0',
         'setuptools',
     ],
     py_modules=['pyokta_aws'],

@@ -14,8 +14,41 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import argparse
-from pyokta_aws.okta.api import Api as OktaApi
+import os.path
+
+import boto3
+from configobj import ConfigObj
+
 from pyokta_aws import settings
+from pyokta_aws.okta.api import Api as OktaApi
+
+
+def auth_with_saml(saml: str, aws_role_to_assume: str, aws_idp: str, sts_duration: str):
+    data = {
+        'SAMLAssertion': saml,
+        'RoleArn': aws_role_to_assume,
+        'PrincipalArn': aws_idp,
+        'DurationSeconds': sts_duration,
+    }
+    client = boto3.client('sts')
+    return client.assume_role_with_saml(**data)
+
+
+def update_aws_credentials_file(profile: str, key_id: str, secret: str, session_token: str):
+    aws_creds_file = os.path.expanduser('~/.aws/credentials')
+    if not os.path.isdir(os.path.expanduser('~/.aws')):
+        raise Exception('Aws config dir not found. Is awscli installed?')
+    if not os.path.isfile(aws_creds_file):
+        print('No aws credentials file found. Creating one for you...')
+        with open(aws_creds_file, None):
+            pass
+    conf = ConfigObj(aws_creds_file)
+    if not conf.get(profile):
+        conf[profile] = {}
+    conf[profile]['aws_access_key_id'] = key_id
+    conf[profile]['aws_secret_access_key'] = secret
+    conf[profile]['aws_session_token'] = session_token
+    conf.write()
 
 
 def authenticate(settings):
@@ -26,8 +59,19 @@ def authenticate(settings):
         app_url=settings.okta_aws_app_url
     )
     saml = api.authn()
-    print(saml)
-    print('TODO: use saml to auth with aws')
+    resp = auth_with_saml(
+        saml=saml,
+        aws_role_to_assume=settings.aws_role_to_assume,
+        aws_idp=settings.aws_idp,
+        sts_duration=settings.sts_duration
+    )
+    creds = resp['Credentials']
+    update_aws_credentials_file(
+        profile=settings.profile,
+        key_id=creds['AccessKeyId'],
+        secret=creds['SecretAccessKey'],
+        session_token=creds['SessionToken']
+    )
 
 
 def main(args):
