@@ -34,7 +34,25 @@ If you login to AWS via Okta SAML federation and assume an IAM role, this tool w
 
 # Why a new tool?
 
-My cohorts and I wanted a tool that was easy to install and use, easy to configure, easy to improve and maintain, and that supported multi-tenancy.
+## Benefits over existing tool
+
+- No PATH changes or overriding aws executables - you're still using native awscli.
+- Supports multiple tenants.
+- One consistent config file for all tenants.
+- Env var changes are 100% optional.
+- Cleaner https error output.
+- Easy to install.
+- JVM not required.
+
+## Existing tool features missing in this tool
+
+These features are planned to be supported in the near future. See [roadmap](#roadmap).
+
+- Interactively select from multiple mfa options
+- Set desired mfa option via cli args, env vars, or config file.
+- Support Okta Verify app mfa
+- Cross-OS compatibility testing (current focus is Linux systems)
+- Okta token caching/refresh
 
 # Getting Started
 
@@ -92,7 +110,7 @@ For supported args, run `pyokta-aws auth --help`.
 
 # How it works
 
-The main `pyokta-aws auth` command authenticates with Okta and aquires a temporary set of credentials from AWS STS. These credentials get written to you local aws credentials file. This allows the awscli and other tools like `terraform` and `packer` to run as expected.
+The main `pyokta-aws auth` command authenticates with Okta and aquires a temporary set of credentials from AWS STS. These credentials get written to you local aws credentials file. This allows the awscli and other tools like [terraform]/[terragrunt], [packer], and [credstash] to run as expected without needing to override the awscli executable or export environment variables.
 
 > Before auth happens, your local aws cli config profile is updated via the profile and region set in the pyokta-aws config. Treat you pyokta-aws config file as the single source of truth for aws cli config when authenticating with Okta.
 
@@ -116,6 +134,7 @@ The main `pyokta-aws auth` command authenticates with Okta and aquires a tempora
 - [ ] aws role list selection in interactive mode :children_crossing:
 - [ ] okta 2fa (others)
 - [ ] use context managers to auto-cancel okta verifications on cancel
+- [ ] okta token cache/refresh to speedup multiple logins :children_crossing:
 
 [okta-aws-cli-assume-role]: https://github.com/oktadeveloper/okta-aws-cli-assume-role
 [aws cli]: https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html
