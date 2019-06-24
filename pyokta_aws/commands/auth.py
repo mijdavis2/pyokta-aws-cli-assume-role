@@ -14,17 +14,20 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import argparse
-from pyokta_aws.okta.api import Api
+from pyokta_aws.okta.api import Api as OktaApi
 from pyokta_aws import settings
 
 
 def authenticate(settings):
-    api = Api(
+    api = OktaApi(
         okta_org=settings.okta_org,
         usr=settings.username,
-        pw=settings.password
+        pw=settings.password,
+        app_url=settings.okta_aws_app_url
     )
-    api.authn()
+    saml = api.authn()
+    print(saml)
+    print('TODO: use saml to auth with aws')
 
 
 def main(args):

@@ -14,28 +14,27 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from getpass import getpass
+from pyquery import PyQuery
 
 import requests
 
 
 class OktaEndpoints(object):
-    def __init__(self, url):
-        self.authn = f"https://{url}/api/v1/authn"
-        self.sms_challenge = f"https://{url}/api/v1/authn/factors/" + "{factorId}/verify"
+    def __init__(self, okta_org, app_url):
+        self.authn = "https://{}/api/v1/authn".format(okta_org)
+        self.app_saml = "{}?onetimetoken=".format(app_url)
 
 
 class Api:
-    def __init__(self, okta_org: str, usr: str, pw: str):
-        self.okta_org = okta_org
-        self.okta: OktaEndpoints = OktaEndpoints(self.okta_org)
+    def __init__(self, okta_org: str, usr: str, pw: str, app_url: str):
+        self.okta: OktaEndpoints = OktaEndpoints(okta_org, app_url)
         self.usr = usr
         self.pw = pw
         self.interactive: bool = True
         self.session: requests.Session = requests.session()
         self.session.headers['Accept'] = 'application/json'
         self.session.headers['Content-Type'] = 'application/json'
-
-        self.factorId: str = ""
+        self.okta_token: str = ""
 
     def _get_credentials(self):
         if self.usr:
@@ -61,7 +60,7 @@ class Api:
         else:
             resp.raise_for_status()
 
-    def verify_via_mfa(self, data):
+    def _verify_via_mfa(self, data):
         if data.get('status') != 'MFA_REQUIRED':
             return
         state_token = data['stateToken']
@@ -89,6 +88,15 @@ class Api:
         }
         return self.session.post(url=url, json=data)
 
+    def _get_aws_app_saml(self):
+        resp = self.session.post(url=self.okta.app_saml + self.okta_token)
+        doc = PyQuery(resp.text)
+        saml_elem = doc('input:hidden')
+        return saml_elem.val()
+
     def authn(self):
         resp = self._authenticate_primary()
-        return self.verify_via_mfa(resp.json())
+        resp = self._verify_via_mfa(resp.json())
+        data = resp.json()
+        self.okta_token = data.get('sessionToken')
+        return self._get_aws_app_saml()

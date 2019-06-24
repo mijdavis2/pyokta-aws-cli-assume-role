@@ -15,6 +15,7 @@ WIP - This project is still in rapid initial development phase.
 - [x] ci (testing) :construction_worker:
 - [x] okta auth
 - [x] okta 2fa (sms)
+- [x] get saml from okta app
 - [ ] aws auth via okta auth
 - [ ] windows support :checkered_flag:
 - [ ] ci/cd (deploy to pypi)?

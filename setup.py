@@ -23,6 +23,7 @@ setuptools.setup(
         'pkginfo >= 1.5.0',
         'requests >= 2.22.0',
         'configobj >= 5.0.6',
+        'pyquery >= 1.4.0',
         'setuptools',
     ],
     py_modules=['pyokta_aws'],
