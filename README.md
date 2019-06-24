@@ -11,7 +11,7 @@
 Okta-AWS auth tool for humans
 </div>
 
-If you login to AWS via Okta SAML federation and assume an iam role, this tool will help you easily achieve pragmatic access to AWS via the aws cli. Also helpful for running **terraform** and **packer**.
+If you login to AWS via Okta SAML federation and assume an IAM role, this tool will help you easily achieve pragmatic access to AWS via the [aws cli] and [SDKs]. Also helpful for running [terraform]/[terragrunt], [packer], and [credstash] with iam roles.
 
 > Replaces [okta-aws-cli-assume-role]
 
@@ -50,7 +50,13 @@ My cohorts and I wanted a tool that was easy to install and use, easy to configu
 
 ## Configure
 
+Configuration can be input via cli args, env vars, or the pyokta-aws config file described above. Configuration takes presidence as follows: `cli args > env vars > config file`. For all supported args and env vars, run `pyokta-aws --help` and `pyokta-aws [COMMAND] --help`.
+
+### Interactive
+
 Run `pyokta-aws configure` for interactive configuration (WIP).
+
+### Config file
 
 Default configuration file location is `~/.pyokta_aws/config`.
 
@@ -67,22 +73,22 @@ password = <it is recommended to keep this blank>
 sts_duration = 14400
 ```
 
-- *region*: Target AWS region
-- *okta_org*: Base domain for okta org
-- *okta_aws_app_url*: Okta app url (can be found by hovering over aws app chiclet)
-- *aws_role_to_assume*: Found in AWS console under `IAM > Roles > <role_id>`. Look for `ARN`.
-- *aws_idp*: Found in AWS console under `IAM > Identity Providers > <provider_id>`. Look for `ARN`.
-- *username*: Okta username
-- *password*: `<it is recommended to keep this blank>`
-- *sts_duration*: Duration (in seconds) to keep token alive. Max duration found in `IAM > Identity Providers > <provider_id>`.
+- **region**: Target AWS region. (Will override default region in target aws cli profile)
+- **okta_org**: Base domain for okta org.
+- **okta_aws_app_url**: Okta app url (can be found by hovering over aws app chiclet).
+- **aws_role_to_assume**: Found in AWS console under `IAM > Roles > <role_id>`. Look for `ARN`.
+- **aws_idp**: Found in AWS console under `IAM > Identity Providers > <provider_id>`. Look for `ARN`.
+- **username**: Okta username.
+- **password**: _it is recommended to keep this blank_ and enter it interactively.
+- **sts_duration**: Duration (in seconds) to keep token alive. Max duration found in `IAM > Identity Providers > <provider_id>`.
 
 # Usage
 
-Basic usage `pyokta-aws auth --profile <aws_profile>`.
+The main command is `pyokta-aws auth`.
 
-See `pyokta-aws --help` for all supported usage.
+Basic usage: `pyokta-aws auth --profile <aws_profile>`.
 
-Configuration can be input via cli args, env vars, or the pyokta-aws config file described above. Configuration takes presidence as follows: `cli args > env vars > config file`.
+For supported args, run `pyokta-aws auth --help`.
 
 # How it works
 
@@ -101,6 +107,7 @@ The main `pyokta-aws auth` command authenticates with Okta and aquires a tempora
 - [x] aws auth via okta auth
 - [x] aws config if not previously setup
 - [x] basic documentation :pencil:
+- [ ] support multiple 2fa methods
 - [ ] interactive initial config :children_crossing:
 - [ ] readthedocs :pencil:
 - [ ] tests :white_check_mark:
@@ -111,3 +118,9 @@ The main `pyokta-aws auth` command authenticates with Okta and aquires a tempora
 - [ ] use context managers to auto-cancel okta verifications on cancel
 
 [okta-aws-cli-assume-role]: https://github.com/oktadeveloper/okta-aws-cli-assume-role
+[aws cli]: https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html
+[SDKs]: https://aws.amazon.com/tools/
+[terraform]: https://www.terraform.io/intro/index.html
+[terragrunt]: https://github.com/gruntwork-io/terragrunt
+[packer]: https://www.packer.io/intro/index.html
+[credstash]: https://github.com/fugue/credstash
