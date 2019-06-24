@@ -128,14 +128,15 @@ The main `pyokta-aws auth` command authenticates with Okta and aquires a tempora
 - [x] aws auth via okta auth
 - [x] aws config if not previously setup
 - [x] basic documentation :pencil:
-- [ ] support multiple 2fa methods
+- [x] support multiple 2fa methods
 - [ ] interactive initial config :children_crossing:
 - [ ] readthedocs :pencil:
 - [ ] tests :white_check_mark:
 - [x] windows support :checkered_flag:
 - [ ] ci/cd (deploy to pypi)?
 - [ ] aws role list selection in interactive mode :children_crossing:
-- [ ] okta 2fa (others)
+- [x] okta 2fa (okta verify)
+- [ ] push notification 2fa
 - [ ] use context managers to auto-cancel okta verifications on cancel
 - [ ] okta token cache/refresh to speedup multiple logins :children_crossing:
 

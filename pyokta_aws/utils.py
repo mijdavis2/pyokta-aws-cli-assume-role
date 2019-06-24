@@ -62,3 +62,18 @@ class EnvironmentDefault(argparse.Action):
 
     def __call__(self, parser, namespace, values, option_string=None):
         setattr(namespace, self.dest, values)
+
+
+def let_user_pick(msg, options):
+    print(msg)
+    for idx, element in enumerate(options):
+        print("{}) {}".format(idx+1, element))
+    i = input("Enter number: ")
+    try:
+        if 0 < int(i) <= len(options):
+            return int(i)
+        print('Unrecognized option...')
+        return let_user_pick(msg, options)
+    except ValueError:
+        print('Unrecognized option...')
+        return let_user_pick(msg, options)
