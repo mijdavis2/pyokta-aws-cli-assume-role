@@ -1,4 +1,5 @@
 import setuptools
+
 import pyokta_aws
 
 with open('README.md', 'r') as fh:
