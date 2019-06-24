@@ -4,6 +4,9 @@
 
 <h3>pyokta-aws-cli-assume-role</h3>
 
+[![pypi version](https://pypi.in/v/pyokta-aws-cli-assume-role)](https://libraries.io/pypi/pyokta-aws-cli-assume-role)
+[![pypi downloads](https://pypi.in/d/pyokta-aws-cli-assume-role)](https://libraries.io/pypi/pyokta-aws-cli-assume-role)
+[![source](https://img.shields.io/badge/source-github-teal.svg)](https://shields.io/)
 [![build](https://travis-ci.org/mijdavis2/pyokta-aws-cli-assume-role.svg?branch=master)](https://travis-ci.org/mijdavis2/pyokta-aws-cli-assume-role) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 ---
@@ -129,7 +132,7 @@ The main `pyokta-aws auth` command authenticates with Okta and aquires a tempora
 - [ ] interactive initial config :children_crossing:
 - [ ] readthedocs :pencil:
 - [ ] tests :white_check_mark:
-- [ ] windows support :checkered_flag:
+- [x] windows support :checkered_flag:
 - [ ] ci/cd (deploy to pypi)?
 - [ ] aws role list selection in interactive mode :children_crossing:
 - [ ] okta 2fa (others)
