@@ -17,6 +17,7 @@ test: build
 	tox
 
 deploy: test
+	git push origin master
 	twine upload dist/*
 
 install: build

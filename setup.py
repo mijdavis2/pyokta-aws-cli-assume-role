@@ -31,10 +31,11 @@ setuptools.setup(
     py_modules=['pyokta_aws'],
     entry_points={
         'pyokta_aws.registered_commands': [
-            'auth = pyokta_aws.commands.auth:main'
+            'auth = pyokta_aws.commands.auth:main',
+            'configure = pyokta_aws.commands.configure:main',
         ],
         'console_scripts': [
-            'pyokta-aws = pyokta_aws.__main__:main'
+            'pyokta-aws = pyokta_aws.__main__:main',
         ]
     }
 )

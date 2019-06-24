@@ -13,17 +13,12 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+import os
 
-__all__ = (
-    "__title__", "__summary__", "__url__", "__version__",
-    "__author__", "__email__"
-)
 
-__title__ = "pyokta-aws-cli-assume-role"
-__summary__ = "AWS cli assume role and Okta authentication."
-__url__ = "https://github.com/mijdavis2/pyokta-aws-cli-assume-role/"
-
-__version__ = "0.0.5"
-
-__author__ = "mijdavis2"
-__email__ = "no_reply@example.com"
+def main(args):
+    print('This command is a WIP. '
+          'Simply creating the default "~/.pyokta_aws" dir and exiting... ')
+    d = os.path.expanduser('~/.pyokta_aws')
+    if not os.path.isdir(d):
+        os.makedirs(d)

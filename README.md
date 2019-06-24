@@ -15,7 +15,7 @@ If you login to AWS via Okta SAML federation and assume an iam role, this tool w
 
 ## Why a new tool?
 
-My cohorts and I wanted a tool that was easy to isntall and use, easy to configure, was easy to improve and maintain, and supported multi-tenancy.
+My cohorts and I wanted a tool that was easy to install and use, easy to configure, easy to improve and maintain, and supported multi-tenancy.
 
 ## Requirements
 
@@ -29,7 +29,7 @@ My cohorts and I wanted a tool that was easy to isntall and use, easy to configu
 
 ## Configure
 
-Run `pyokta-aws configure` for interactive configuration.
+Run `pyokta-aws configure` for interactive configuration (WIP).
 
 Default configuration file location is `~/.pyokta_aws/config`.
 
@@ -45,6 +45,15 @@ username = johnsmith
 password = <it is recommended to keep this blank>
 sts_duration = 14400
 ```
+
+- *region*: Target AWS region
+- *okta_org*: Base domain for okta org
+- *okta_aws_app_url*: Okta app url (can be found by hovering over aws app chiclet)
+- *aws_role_to_assume*: Found in AWS console under `IAM > Roles > <role_id>`. Look for `ARN`.
+- *aws_idp*: Found in AWS console under `IAM > Identity Providers > <provider_id>`. Look for `ARN`.
+- *username*: Okta username
+- *password*: `<it is recommended to keep this blank>`
+- *sts_duration*: Duration (in seconds) to keep token alive. Max duration found in `IAM > Identity Providers > <provider_id>`.
 
 ## Usage
 
@@ -70,7 +79,8 @@ The main `pyokta-aws auth` command authenticates with Okta and aquires a tempora
 - [x] get saml from okta app
 - [x] aws auth via okta auth
 - [x] aws config if not previously setup
-- [ ] basic documentation :pencil:
+- [x] basic documentation :pencil:
+- [ ] interactive initial config :children_crossing:
 - [ ] readthedocs :pencil:
 - [ ] tests :white_check_mark:
 - [ ] windows support :checkered_flag:
