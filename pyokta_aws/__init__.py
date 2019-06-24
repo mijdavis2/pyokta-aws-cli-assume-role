@@ -23,7 +23,7 @@ __title__ = "pyokta-aws-cli-assume-role"
 __summary__ = "AWS cli assume role and Okta authentication."
 __url__ = "https://github.com/mijdavis2/pyokta-aws-cli-assume-role/"
 
-__version__ = "0.0.6"
+__version__ = "0.0.7"
 
 __author__ = "mijdavis2"
 __email__ = "no_reply@example.com"
