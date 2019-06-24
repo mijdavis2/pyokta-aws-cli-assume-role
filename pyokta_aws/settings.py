@@ -99,7 +99,6 @@ class Settings(object):
             "-r", "--region",
             action=utils.EnvironmentDefault,
             env="OKTA_AWS_REGION",
-            default='us-east-1',
             required=False,
             help="AWS region to use for profile. "
                  "This will override your aws config region for the given profile "
