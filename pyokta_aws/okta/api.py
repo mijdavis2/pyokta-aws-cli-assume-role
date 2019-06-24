@@ -34,7 +34,6 @@ class Api:
         self.session: requests.Session = requests.session()
         self.session.headers['Accept'] = 'application/json'
         self.session.headers['Content-Type'] = 'application/json'
-        self.okta_token: str = ""
 
     def _get_credentials(self):
         if self.usr:
@@ -60,13 +59,18 @@ class Api:
         else:
             resp.raise_for_status()
 
+    @staticmethod
+    def _select_mfa_method(factors):
+        print("Factor selection not yet implementd. Using first mfa factor method")
+        return factors[0]
+
     def _verify_via_mfa(self, data):
         if data.get('status') != 'MFA_REQUIRED':
             return
         state_token = data['stateToken']
         factors = [x for x in data['_embedded']['factors']]
         if len(factors) > 1:
-            factor = self.select_mfa_method(factors)
+            factor = self._select_mfa_method(factors)
         else:
             factor = factors[0]
         if factor.get('_links'):
@@ -88,15 +92,13 @@ class Api:
         }
         return self.session.post(url=url, json=data)
 
-    def _get_aws_app_saml(self):
-        resp = self.session.post(url=self.okta.app_saml + self.okta_token)
+    def _get_aws_app_saml(self, token):
+        resp = self.session.post(url=self.okta.app_saml + token)
         doc = PyQuery(resp.text)
         saml_elem = doc('input:hidden')
         return saml_elem.val()
 
-    def authn(self):
+    def get_saml_via_auth(self):
         resp = self._authenticate_primary()
         resp = self._verify_via_mfa(resp.json())
-        data = resp.json()
-        self.okta_token = data.get('sessionToken')
-        return self._get_aws_app_saml()
+        return self._get_aws_app_saml(resp.json().get('sessionToken'))
