@@ -48,11 +48,11 @@ If you login to AWS via Okta SAML federation and assume an IAM role, this tool w
 
 These features are planned to be supported in the near future. See [roadmap](#roadmap).
 
-- Interactively select from multiple mfa options
+- Interactively select from multiple mfa options.
 - Set desired mfa option via cli args, env vars, or config file.
-- Support Okta Verify app mfa
-- Cross-OS compatibility testing (current focus is Linux systems)
-- Okta token caching/refresh
+- Support Okta Verify app mfa (currently only sms is verified to work).
+- Cross-OS compatibility testing (current focus is Linux systems).
+- Okta token caching/refresh.
 
 # Getting Started
 
