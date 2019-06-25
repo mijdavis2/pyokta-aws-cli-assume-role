@@ -232,6 +232,12 @@ class Settings(object):
         for x, y in settings.items():
             if not y:
                 settings[x] = conf_settings.get(x)
+        try:
+            settings['sts_duration'] = int(settings['sts_duration'])
+        except ValueError as exc:
+            print('"{}" cannot be converted to an int: {}'.format(
+                settings['sts_duration'], exc))
+            exit(1)
         return settings
 
     @staticmethod
