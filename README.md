@@ -20,6 +20,8 @@ If you login to AWS via Okta SAML federation and assume an IAM role, this tool w
 
 > Replaces [okta-aws-cli-assume-role]
 
+**NOTICE**: This project is still in rapid development phase. You can [subscribe to new release notifications via github]. Upgrade to the most recent release via `pip install --upgrade pyokta-aws-cli-assume-role`.
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 # Table of Contents
@@ -38,12 +40,10 @@ If you login to AWS via Okta SAML federation and assume an IAM role, this tool w
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-> NOTICE: Though this project works in a limited capacity, keep in mind that this project is still in rapid development phase. No security audits have been performed.
-
 # Support
 
 - MFA: SMS
-- MFA: Okta Verify app
+- MFA: Okta mobile app
 - All major operating systems (Linux, Windows, Mac).
 
 Please [create an issue] for bugs or feature requests (if not already mentioned in roadmap or other issues).
@@ -65,8 +65,8 @@ Please [create an issue] for bugs or feature requests (if not already mentioned 
 These features are planned to be supported in the near future. See [roadmap](#roadmap).
 
 - [x] ~~Interactively select from multiple mfa options.~~
-- [ ] Set desired mfa option via cli args, env vars, or config file.
-- [x] ~~Support Okta Verify app mfa (currently only sms is verified to work).~~
+- [x] ~~Set desired mfa option via cli args, env vars, or config file.~~
+- [x] ~~Support Okta mobile app mfa (currently only sms is verified to work).~~
 - [x] ~~Cross-OS compatibility~~
 - [ ] Okta token caching/refresh.
 
@@ -108,8 +108,9 @@ okta_aws_app_url = https://example.okta.com/home/amazon_aws/123456789
 aws_role_to_assume = arn:aws:iam::987654321:role/AWSAdmin
 aws_idp = arn:aws:iam::987654321:saml-provider/Okta
 username = johnsmith
-password = <it is recommended to keep this blank>
+password =
 sts_duration = 14400
+mfa_choice = sms
 ```
 
 - **region**: Target AWS region. (Will override default region in target aws cli profile)
@@ -117,9 +118,10 @@ sts_duration = 14400
 - **okta_aws_app_url**: Okta app url (can be found by hovering over aws app chiclet).
 - **aws_role_to_assume**: Found in AWS console under `IAM > Roles > <role_id>`. Look for `ARN`.
 - **aws_idp**: Found in AWS console under `IAM > Identity Providers > <provider_id>`. Look for `ARN`.
-- **username**: Okta username.
-- **password**: _it is recommended to keep this blank_ and enter it interactively.
-- **sts_duration**: Duration (in seconds) to keep token alive. Max duration found in `IAM > Identity Providers > <provider_id>`.
+- **username**: (optional) Okta username.
+- **password**: (optional) _it is recommended to keep this blank_ and enter it interactively.
+- **sts_duration**: (optional) Duration (in seconds) to keep token alive. Max duration found in `IAM > Identity Providers > <provider_id>`.
+- **mfa_choice**: (optional) If you have multiple MFA factors registered, you can skip interactive factor selection by setting preferred mfa choice. Current options are `sms` and `app` (i.e. [Okta mobile app]).
 
 # Usage
 
@@ -157,13 +159,14 @@ The main `pyokta-aws auth` command authenticates with Okta and aquires a tempora
 - [x] ~~windows support [:checkered_flag:]~~
 - [ ] ci/cd (deploy to pypi)?
 - [ ] aws role list selection in interactive mode [:children_crossing:]
-- [x] ~~okta 2fa (okta verify app)~~
+- [x] ~~okta 2fa (okta mobile app)~~
 - [ ] push notification 2fa
 - [ ] use context managers to auto-cancel okta verifications on cancel
 - [ ] okta token cache/refresh to speedup multiple logins [:children_crossing:]
 
 [:dog:]
 
+[subscribe to new release notifications via github]: https://github.com/mijdavis2/pyokta-aws-cli-assume-role
 [okta-aws-cli-assume-role]: https://github.com/oktadeveloper/okta-aws-cli-assume-role
 [aws cli]: https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html
 [SDKs]: https://aws.amazon.com/tools/
@@ -172,6 +175,7 @@ The main `pyokta-aws auth` command authenticates with Okta and aquires a tempora
 [packer]: https://www.packer.io/intro/index.html
 [credstash]: https://github.com/fugue/credstash
 [create an issue]: https://github.com/mijdavis2/pyokta-aws-cli-assume-role/issues
+[okta mobile app]: https://help.okta.com/en/prod/Content/Topics/ReleaseNotes/mobile-release-status.htm#Release
 [:construction_worker:]: https://youtu.be/dm2glu3WLGk?t=36
 [:pencil:]: https://youtu.be/hHW1oY26kxQ
 [:checkered_flag:]: https://youtu.be/HrPRtYvCvZI

@@ -64,21 +64,22 @@ def authenticate(settings):
         okta_org=settings.okta_org,
         usr=settings.username,
         pw=settings.password,
-        app_url=settings.okta_aws_app_url
+        app_url=settings.okta_aws_app_url,
+        mfa_choice=settings.mfa_choice,
     )
     saml = okta.get_saml_via_auth()
     resp = aws_auth_with_saml(
         saml=saml,
         aws_role_to_assume=settings.aws_role_to_assume,
         aws_idp=settings.aws_idp,
-        sts_duration=settings.sts_duration
+        sts_duration=settings.sts_duration,
     )
     creds = resp['Credentials']
     update_aws_credentials_file(
         profile=settings.profile,
         key_id=creds['AccessKeyId'],
         secret=creds['SecretAccessKey'],
-        session_token=creds['SessionToken']
+        session_token=creds['SessionToken'],
     )
     print('SUCCESS!')
 
