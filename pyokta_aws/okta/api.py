@@ -20,6 +20,12 @@ from pyquery import PyQuery
 
 from pyokta_aws.utils import let_user_pick
 
+DISPLAY_NAMES = {
+    'push': 'Push notification (not yet supported)',
+            'sms': 'SMS',
+            'token:software:totp': 'Okta Verify app'
+}
+
 
 class OktaEndpoints:
     def __init__(self, okta_org, app_url):
@@ -64,42 +70,68 @@ class Api:
     @staticmethod
     def _select_mfa_method(factors):
         print('-' * 15)
-        msg = ('Multiple MFA methods registered.\n'
+        msg = ('Multiple MFA factors registered.\n'
                'Note: "push" is not currently supported...')
-        methods = [x['factorType'] for x in factors]
-        pick = let_user_pick(msg, methods)
-        method = [x for x in factors if x['factorType'] == methods[pick - 1]][0]
-        if method == 'push':
-            raise Exception('MFA method "push" is not yet implemented.')
-        return method
+        f_types = [x['factorType'] for x in factors]
+        # Format factor types for user experience ;)
+        display_f_types = [
+            DISPLAY_NAMES.get(x) if DISPLAY_NAMES.get(x) else x for x in f_types
+        ]
+        pick = let_user_pick(msg, display_f_types)
+        # Filter for selected factor type
+        factor = list(filter(lambda x: x['factorType'] == f_types[pick - 1], factors))[0]
+        if factor == 'push':
+            raise Exception('MFA factor "push" is not yet implemented.')
+        return factor
+
+    def _initiate_mfa(self, factor, state_token):
+        data = {
+            'stateToken': state_token
+        }
+        return self.session.post(
+            url=factor['_links']['verify']['href'],
+            json=data
+        )
+
+    def _input_and_send_code(self, data, factor):
+        # Format for user experience
+        display_name = DISPLAY_NAMES.get(factor) if DISPLAY_NAMES.get(factor) else factor
+        mfa_code = input('Enter {} code: '.format(display_name))
+        url = data['_links']['next']['href']
+        resp = self.session.post(
+            url=url,
+            json={
+                'stateToken': data['stateToken'],
+                'passCode': mfa_code
+            }
+        )
+        if resp.status_code == 200:
+            return resp
+        elif resp.status_code == 403:
+            print('Incorrect or stale code.\n'
+                  'Please check code...')
+            return self._input_and_send_code(data, factor)
+        else:
+            raise Exception('Something went wrong.\nresp: {}\n'
+                            'You may be locked out of Okta'.format(resp.content))
 
     def _verify_via_mfa(self, data):
         if data.get('status') != 'MFA_REQUIRED':
-            return
-        state_token = data['stateToken']
-        factors = [x for x in data['_embedded']['factors']]
+            raise Exception("Something went wrong.\n"
+                            "Don't know how to handle status '{}'".format(data.get('status')))
+        factors = [x for x in data['_embedded'].get('factors')]
+        if len(factors) == 0:
+            raise Exception("No MFA methods registered...")
         if len(factors) > 1:
             factor = self._select_mfa_method(factors)
         else:
             factor = factors[0]
-        if factor.get('_links'):
-            if factor['_links'].get('verify'):
-                data = {
-                    'stateToken': state_token
-                }
-                resp = self.session.post(
-                    url=factor['_links']['verify']['href'],
-                    json=data
-                )
-                data = resp.json()
-                state_token = data.get('stateToken')
-        mfa_code = input('Enter {} code:'.format(factor['factorType']))
-        url = data['_links']['next']['href']
-        data = {
-            'stateToken': state_token,
-            'passCode': mfa_code
-        }
-        return self.session.post(url=url, json=data)
+        resp = self._initiate_mfa(factor, data['stateToken'])
+        resp = self._input_and_send_code(resp.json(), factor['factorType'])
+        token = resp.json().get('sessionToken')
+        if not token:
+            raise Exception('No session token found in response: \n{}'.format(resp.json()))
+        return token
 
     def _get_aws_app_saml(self, token):
         resp = self.session.post(url=self.okta.app_saml + token)
@@ -109,5 +141,5 @@ class Api:
 
     def get_saml_via_auth(self):
         resp = self._authenticate_primary()
-        resp = self._verify_via_mfa(resp.json())
-        return self._get_aws_app_saml(resp.json().get('sessionToken'))
+        token = self._verify_via_mfa(resp.json())
+        return self._get_aws_app_saml(token)
