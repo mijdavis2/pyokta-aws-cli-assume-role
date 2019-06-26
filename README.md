@@ -1,6 +1,8 @@
 <div align="center">
 
-<img src="assets/pyokta-aws-cli-assume-role.png" width=300\>
+<a href="https://github.com/mijdavis2/pyokta-aws-cli-assume-role/tree/master">
+    <img src="https://raw.githubusercontent.com/mijdavis2/pyokta-aws-cli-assume-role/master/assets/pyokta-aws-cli-assume-role.png" width=300\>
+</a>
 
 <h3>pyokta-aws-cli-assume-role</h3>
 
@@ -22,11 +24,14 @@ If you login to AWS via Okta SAML federation and assume an IAM role, this tool w
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 # Table of Contents
 
+- [Support](#support)
 - [Why a new tool?](#why-a-new-tool)
 - [Getting Started](#getting-started)
   - [Requirements](#requirements)
   - [Install](#install)
   - [Configure](#configure)
+    - [Interactive](#interactive)
+    - [Config file](#config-file)
 - [Usage](#usage)
 - [How it works](#how-it-works)
 - [Roadmap](#roadmap)
@@ -34,6 +39,14 @@ If you login to AWS via Okta SAML federation and assume an IAM role, this tool w
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 > NOTICE: Though this project works in a limited capacity, keep in mind that this project is still in rapid development phase. No security audits have been performed.
+
+# Support
+
+- MFA: SMS
+- MFA: Okta Verify app
+- All major operating systems (Linux, Windows, Mac).
+
+Please [create an issue] for bugs or feature requests (if not already mentioned in roadmap or other issues).
 
 # Why a new tool?
 
@@ -51,11 +64,11 @@ If you login to AWS via Okta SAML federation and assume an IAM role, this tool w
 
 These features are planned to be supported in the near future. See [roadmap](#roadmap).
 
-- Interactively select from multiple mfa options.
-- Set desired mfa option via cli args, env vars, or config file.
-- Support Okta Verify app mfa (currently only sms is verified to work).
-- Cross-OS compatibility testing (current focus is Linux systems).
-- Okta token caching/refresh.
+- [x] ~~Interactively select from multiple mfa options.~~
+- [ ] Set desired mfa option via cli args, env vars, or config file.
+- [x] ~~Support Okta Verify app mfa (currently only sms is verified to work).~~
+- [x] ~~Cross-OS compatibility~~
+- [ ] Okta token caching/refresh.
 
 # Getting Started
 
@@ -63,11 +76,16 @@ These features are planned to be supported in the near future. See [roadmap](#ro
 
 - python 3.5+
 - pip
-- awscli: `pip install awscli` -- Though it's not required to run the tool, the tool exists to support friendly awscli auth via Okta.
+- awscli: `pip install --upgrade awscli`
 
 ## Install
 
-```pip install pyokta-aws-cli-assume-role```
+```pip install --upgrade pyokta-aws-cli-assume-role```
+
+---
+
+To check the install and output the current version, run:
+```pyokta-aws --version```
 
 ## Configure
 
@@ -105,40 +123,46 @@ sts_duration = 14400
 
 # Usage
 
-The main command is `pyokta-aws auth`.
+To authenticate via okta and assume an aws profile, run:
 
-Basic usage: `pyokta-aws auth --profile <aws_profile>`.
+```pyokta-aws auth --profile <aws_profile>```
 
-For supported args, run `pyokta-aws auth --help`.
+---
+
+For all supported auth args, run `pyokta-aws auth --help`.
+
+For all supported commands, run `pyokta-aws --help`.
 
 # How it works
 
-The main `pyokta-aws auth` command authenticates with Okta and aquires a temporary set of credentials from AWS STS. These credentials get written to you local aws credentials file. This allows the awscli and other tools like [terraform]/[terragrunt], [packer], and [credstash] to run as expected without needing to override the awscli executable or export environment variables.
+The main `pyokta-aws auth` command authenticates with Okta and aquires a temporary set of credentials from AWS STS. These credentials get written to you local aws credentials file. This allows the [aws cli] and other tools like [terraform]/[terragrunt], [packer], and [credstash] to run as expected without needing to override the awscli executable or export environment variables.
 
 > Before auth happens, your local aws cli config profile is updated via the profile and region set in the pyokta-aws config. Treat you pyokta-aws config file as the single source of truth for aws cli config when authenticating with Okta.
 
 # Roadmap
-- [x] pypi package
-- [x] cli and settings loaders
-- [x] support multi-tenant settings
-- [x] ci (testing) :construction_worker:
-- [x] okta auth
-- [x] okta 2fa (sms)
-- [x] get saml from okta app
-- [x] aws auth via okta auth
-- [x] aws config if not previously setup
-- [x] basic documentation :pencil:
-- [x] support multiple 2fa methods
-- [ ] interactive initial config :children_crossing:
-- [ ] readthedocs :pencil:
-- [ ] tests :white_check_mark:
-- [x] windows support :checkered_flag:
+- [x] ~~pypi package~~
+- [x] ~~cli and settings loaders~~
+- [x] ~~support multi-tenant settings~~
+- [x] ~~ci (testing) [:construction_worker:]~~
+- [x] ~~okta auth~~
+- [x] ~~okta 2fa (sms)~~
+- [x] ~~get saml from okta app~~
+- [x] ~~aws auth via okta auth~~
+- [x] ~~aws config if not previously setup~~
+- [x] ~~basic documentation [:pencil:]~~
+- [x] ~~support multiple 2fa methods~~
+- [ ] interactive initial config [:children_crossing:]
+- [ ] readthedocs [:pencil:]
+- [ ] many more tests
+- [x] ~~windows support [:checkered_flag:]~~
 - [ ] ci/cd (deploy to pypi)?
-- [ ] aws role list selection in interactive mode :children_crossing:
-- [x] okta 2fa (okta verify)
+- [ ] aws role list selection in interactive mode [:children_crossing:]
+- [x] ~~okta 2fa (okta verify app)~~
 - [ ] push notification 2fa
 - [ ] use context managers to auto-cancel okta verifications on cancel
-- [ ] okta token cache/refresh to speedup multiple logins :children_crossing:
+- [ ] okta token cache/refresh to speedup multiple logins [:children_crossing:]
+
+[:dog:]
 
 [okta-aws-cli-assume-role]: https://github.com/oktadeveloper/okta-aws-cli-assume-role
 [aws cli]: https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html
@@ -147,3 +171,9 @@ The main `pyokta-aws auth` command authenticates with Okta and aquires a tempora
 [terragrunt]: https://github.com/gruntwork-io/terragrunt
 [packer]: https://www.packer.io/intro/index.html
 [credstash]: https://github.com/fugue/credstash
+[create an issue]: https://github.com/mijdavis2/pyokta-aws-cli-assume-role/issues
+[:construction_worker:]: https://youtu.be/dm2glu3WLGk?t=36
+[:pencil:]: https://youtu.be/hHW1oY26kxQ
+[:checkered_flag:]: https://youtu.be/HrPRtYvCvZI
+[:children_crossing:]: https://youtu.be/dQw4w9WgXcQ
+[:dog:]: https://omfgdogs.com/
