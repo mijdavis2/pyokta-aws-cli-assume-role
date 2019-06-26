@@ -22,8 +22,8 @@ from pyokta_aws.utils import let_user_pick
 
 DISPLAY_NAMES = {
     'push': 'Push notification (not yet supported)',
-            'sms': 'SMS',
-            'token:software:totp': 'Okta Verify app'
+    'sms': 'SMS',
+    'token:software:totp': 'Okta mobile app'
 }
 
 
@@ -34,10 +34,11 @@ class OktaEndpoints:
 
 
 class Api:
-    def __init__(self, okta_org: str, usr: str, pw: str, app_url: str):
+    def __init__(self, okta_org: str, usr: str, pw: str, app_url: str, mfa_choice: str):
         self.okta: OktaEndpoints = OktaEndpoints(okta_org, app_url)
         self.usr = usr
         self.pw = pw
+        self.mfa_choice = mfa_choice
         self.interactive: bool = True
         self.session: requests.Session = requests.session()
         self.session.headers['Accept'] = 'application/json'
@@ -68,7 +69,7 @@ class Api:
             resp.raise_for_status()
 
     @staticmethod
-    def _select_mfa_method(factors):
+    def _select_mfa_factor(factors):
         print('-' * 15)
         msg = ('Multiple MFA factors registered.\n'
                'Note: "push" is not currently supported...')
@@ -83,6 +84,12 @@ class Api:
         if factor == 'push':
             raise Exception('MFA factor "push" is not yet implemented.')
         return factor
+
+    def _handle_multiple_mfa_factors(self, factors):
+        if self.mfa_choice:
+            return list(filter(lambda x: x['factorType'] == self.mfa_choice, factors))[0]
+        else:
+            return self._select_mfa_factor(factors)
 
     def _initiate_mfa(self, factor, state_token):
         data = {
@@ -123,7 +130,7 @@ class Api:
         if len(factors) == 0:
             raise Exception("No MFA methods registered...")
         if len(factors) > 1:
-            factor = self._select_mfa_method(factors)
+            factor = self._handle_multiple_mfa_factors(factors)
         else:
             factor = factors[0]
         resp = self._initiate_mfa(factor, data['stateToken'])

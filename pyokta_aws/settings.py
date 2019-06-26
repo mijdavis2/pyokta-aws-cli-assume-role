@@ -19,6 +19,11 @@ from configobj import ConfigObj
 
 from pyokta_aws import utils
 
+MFA_SETTING_MAP = {
+    'sms': 'sms',
+    'app': 'token:software:totp'
+}
+
 
 class Settings(object):
     """Object that manages the configuration for pyokta_aws.
@@ -48,6 +53,7 @@ class Settings(object):
                  aws_role_to_assume=None,
                  aws_idp=None,
                  sts_duration=None,
+                 mfa_choice=None,
                  config_file='~/.pyokta_aws/config',
                  verbose=False,
                  interactive=True,
@@ -81,6 +87,7 @@ class Settings(object):
         self.aws_role_to_assume = aws_role_to_assume
         self.aws_idp = aws_idp
         self.sts_duration = sts_duration
+        self.mfa_choice = mfa_choice
         self.config_file = config_file
         self.verbose = verbose
 
@@ -172,6 +179,16 @@ class Settings(object):
                  "(Can also be set via %(env)s environment variable.)",
         )
         parser.add_argument(
+            "-m", "--mfa-choice",
+            action=utils.EnvironmentDefault,
+            env="OKTA_MFA_CHOICE",
+            required=False,
+            help="The preferred MFA factor choice. "
+                 "Options: 'sms', 'app'. "
+                 "The 'app' option refers to the Okta mobile MFA apps."
+                 "(Can also be set via %(env)s environment variable.)",
+        )
+        parser.add_argument(
             "-c", "--config-file",
             action=utils.EnvironmentDefault,
             env="PYOKTA_AWS_CONFIG",
@@ -205,6 +222,7 @@ class Settings(object):
         settings['interactive'] = not settings.pop('non_interactive')
         if settings['config_file'].lower() != 'none':
             settings = cls.load_config_settings(settings)
+        # Format arn settings
         iam_string = 'arn:aws:iam::'
         settings['aws_role_to_assume'] = '{}{}'.format(
             iam_string, settings['aws_role_to_assume'].replace(iam_string, '')
@@ -214,7 +232,19 @@ class Settings(object):
         )
         if settings['verbose']:
             cls.print_settings(settings)
+        settings = cls._handle_mfa_choice(settings)
         return cls(**settings)
+
+    @staticmethod
+    def _handle_mfa_choice(settings):
+        mfa_choice = settings.get('mfa_choice')
+        if mfa_choice:
+            if mfa_choice not in MFA_SETTING_MAP.keys():
+                print('Unknown mfa choice: "{}".'.format(mfa_choice))
+                print('Please use one of {}'.format(MFA_SETTING_MAP.keys()))
+                exit(1)
+            settings['mfa_choice'] = MFA_SETTING_MAP[mfa_choice]
+        return settings
 
     @staticmethod
     def load_config_settings(settings):
