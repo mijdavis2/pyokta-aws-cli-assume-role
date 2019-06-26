@@ -174,7 +174,7 @@ class Settings(object):
             "-s", "--sts-duration",
             action=utils.EnvironmentDefault,
             env="OKTA_STS_DURATION",
-            default=3600,
+            required=False,
             help="The AWS session duration. "
                  "(Can also be set via %(env)s environment variable.)",
         )
@@ -220,6 +220,8 @@ class Settings(object):
         settings = vars(args)
         settings['config_file'] = os.path.expanduser(settings['config_file'])
         settings['interactive'] = not settings.pop('non_interactive')
+        if not settings.get('sts_duration'):
+            settings['sts_duration'] = 3600
         if settings['config_file'].lower() != 'none':
             settings = cls.load_config_settings(settings)
         # Format arn settings
