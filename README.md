@@ -108,7 +108,6 @@ okta_aws_app_url = https://example.okta.com/home/amazon_aws/123456789
 aws_role_to_assume = arn:aws:iam::987654321:role/AWSAdmin
 aws_idp = arn:aws:iam::987654321:saml-provider/Okta
 username = johnsmith
-password =
 sts_duration = 14400
 mfa_choice = sms
 ```
@@ -119,7 +118,7 @@ mfa_choice = sms
 - **aws_role_to_assume**: Found in AWS console under `IAM > Roles > <role_id>`. Look for `ARN`.
 - **aws_idp**: Found in AWS console under `IAM > Identity Providers > <provider_id>`. Look for `ARN`.
 - **username**: (optional) Okta username.
-- **password**: (optional) _it is recommended to keep this blank_ and enter it interactively.
+- **password**: (optional) _it is recommended to omit or leave it blank_ and enter it interactively.
 - **sts_duration**: (optional) Duration (in seconds) to keep token alive. Max duration found in `IAM > Identity Providers > <provider_id>`.
 - **mfa_choice**: (optional) If you have multiple MFA factors registered, you can skip interactive factor selection by setting preferred mfa choice. Current options are `sms` and `app` (i.e. [Okta mobile app]).
 
