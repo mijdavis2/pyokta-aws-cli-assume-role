@@ -220,10 +220,10 @@ class Settings(object):
         settings = vars(args)
         settings['config_file'] = os.path.expanduser(settings['config_file'])
         settings['interactive'] = not settings.pop('non_interactive')
-        if not settings.get('sts_duration'):
-            settings['sts_duration'] = 3600
         if settings['config_file'].lower() != 'none':
             settings = cls.load_config_settings(settings)
+        if not settings.get('sts_duration'):
+            settings['sts_duration'] = 3600
         # Format arn settings
         iam_string = 'arn:aws:iam::'
         settings['aws_role_to_assume'] = '{}{}'.format(
