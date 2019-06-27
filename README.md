@@ -20,7 +20,7 @@ If you login to AWS via Okta SAML federation and assume an IAM role, this tool w
 
 > Replaces [okta-aws-cli-assume-role]
 
-**NOTICE**: This project is still in rapid development phase. You can [subscribe to new release notifications via github]. Upgrade to the most recent release via `pip install --upgrade pyokta-aws-cli-assume-role`.
+**NOTICE**: This project is still in rapid development phase. You can [subscribe to new release notifications via github]. Upgrade to the most recent release via `pip install --upgrade --no-cache-dir pyokta-aws-cli-assume-role`.
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -80,7 +80,7 @@ These features are planned to be supported in the near future. See [roadmap](#ro
 
 ## Install
 
-```pip install --upgrade pyokta-aws-cli-assume-role```
+```pip install --upgrade --no-cache-dir pyokta-aws-cli-assume-role```
 
 ---
 
