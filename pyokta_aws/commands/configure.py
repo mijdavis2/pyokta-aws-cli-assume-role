@@ -22,3 +22,4 @@ def main(args):
     d = os.path.expanduser('~/.pyokta_aws')
     if not os.path.isdir(d):
         os.makedirs(d)
+    open(os.path.expanduser('{}/config'.format(d)), 'a').close()

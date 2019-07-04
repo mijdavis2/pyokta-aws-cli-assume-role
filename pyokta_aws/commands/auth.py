@@ -85,8 +85,9 @@ def authenticate(settings):
 
 
 def main(args):
-    aws_dir = os.path.isdir(os.path.expanduser('~/.aws'))
-    if not aws_dir:
+    aws_dir = os.path.expanduser('~/.aws')
+    aws_dir_exists = os.path.isdir(aws_dir)
+    if not aws_dir_exists:
         raise Exception('"{}" dir not found. Is the awscli installed?'.format(aws_dir))
     parser = argparse.ArgumentParser(prog='pyokta-aws auth')
     settings.Settings.register_argparse_arguments(parser)
