@@ -136,9 +136,9 @@ For all supported commands, run `pyokta-aws --help`.
 
 # How it works
 
-The main `pyokta-aws auth` command authenticates with Okta and aquires a temporary set of credentials from AWS STS. These credentials get written to you local aws credentials file. This allows the [aws cli] and other tools like [terraform]/[terragrunt], [packer], and [credstash] to run as expected without needing to override the awscli executable or export environment variables.
+The main `pyokta-aws auth` command authenticates with Okta and aquires a temporary set of credentials from AWS STS. These credentials get written to your local aws credentials file. This allows the [aws cli] and other tools like [terraform]/[terragrunt], [packer], and [credstash] to run as expected without needing to override the awscli executable or export environment variables.
 
-> Before auth happens, your local aws cli config profile is updated via the profile and region set in the pyokta-aws config. Treat you pyokta-aws config file as the single source of truth for aws cli config when authenticating with Okta.
+> Before auth happens, your local aws cli config profile is updated via the profile and region set in the pyokta-aws config. Treat your pyokta-aws config file as the single source of truth for aws cli config when authenticating with Okta.
 
 # Roadmap
 - [x] ~~pypi package~~
