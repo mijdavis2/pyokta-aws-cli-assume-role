@@ -10,6 +10,7 @@
 
 * Use the present tense ("Add feature" not "Added feature")
 * Use the imperative mood ("Move cursor to..." not "Moves cursor to...")
+* Don't end commit message in a period
 * Limit the first line to 72 characters or less
 * Reference issues and pull requests liberally after the first line
 <!-- * When only changing documentation, include `[ci skip]` in the commit title -->
