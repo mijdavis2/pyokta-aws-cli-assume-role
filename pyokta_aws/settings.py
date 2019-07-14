@@ -24,6 +24,8 @@ MFA_SETTING_MAP = {
     'app': 'token:software:totp'
 }
 
+STS_DEFAULT = 3600
+
 
 class Settings(object):
     """Object that manages the configuration for pyokta_aws.
@@ -223,7 +225,9 @@ class Settings(object):
         if settings['config_file'].lower() != 'none':
             settings = cls.load_config_settings(settings)
         if not settings.get('sts_duration'):
-            settings['sts_duration'] = 3600
+            if settings['verbose']:
+                print('Setting sts to default value "{}"'.format(STS_DEFAULT))
+            settings['sts_duration'] = STS_DEFAULT
         # Format arn settings
         iam_string = 'arn:aws:iam::'
         settings['aws_role_to_assume'] = '{}{}'.format(
@@ -267,9 +271,14 @@ class Settings(object):
         try:
             settings['sts_duration'] = int(settings['sts_duration'])
         except ValueError as exc:
-            print('"{}" cannot be converted to an int: {}'.format(
-                settings['sts_duration'], exc))
+            print('STS duration "{}" cannot be converted to an int: {}'.format(
+                  settings['sts_duration'], exc))
             exit(1)
+        except TypeError:
+            if settings['verbose']:
+                print('STS duration "{}" cannot be converted to an int...'.format(
+                      settings['sts_duration']))
+            settings['sts_duration'] = None
         return settings
 
     @staticmethod

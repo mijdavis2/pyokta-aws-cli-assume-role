@@ -26,6 +26,8 @@ DISPLAY_NAMES = {
     'token:software:totp': 'Okta mobile app'
 }
 
+HANDLED_STATUS = ['MFA_REQUIRED', 'SUCCESS']
+
 
 class OktaEndpoints:
     def __init__(self, okta_org, app_url):
@@ -123,9 +125,6 @@ class Api:
                             'You may be locked out of Okta'.format(resp.content))
 
     def _verify_via_mfa(self, data):
-        if data.get('status') != 'MFA_REQUIRED':
-            raise Exception("Something went wrong.\n"
-                            "Don't know how to handle status '{}'".format(data.get('status')))
         factors = [x for x in data['_embedded'].get('factors')]
         if len(factors) == 0:
             raise Exception("No MFA methods registered...")
@@ -135,9 +134,17 @@ class Api:
             factor = factors[0]
         resp = self._initiate_mfa(factor, data['stateToken'])
         resp = self._input_and_send_code(resp.json(), factor['factorType'])
-        token = resp.json().get('sessionToken')
+        return resp.json()
+
+    def _get_token(self, data):
+        if data.get('status') not in HANDLED_STATUS:
+            raise Exception("Something went wrong.\n"
+                            "Don't know how to handle status '{}'".format(data.get('status')))
+        if data['status'] != 'SUCCESS':
+            data = self._verify_via_mfa(data)
+        token = data.get('sessionToken')
         if not token:
-            raise Exception('No session token found in response: \n{}'.format(resp.json()))
+            raise Exception('No session token found in response: \n{}'.format(data))
         return token
 
     def _get_aws_app_saml(self, token):
@@ -148,5 +155,5 @@ class Api:
 
     def get_saml_via_auth(self):
         resp = self._authenticate_primary()
-        token = self._verify_via_mfa(resp.json())
+        token = self._get_token(resp.json())
         return self._get_aws_app_saml(token)
