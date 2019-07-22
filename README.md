@@ -6,8 +6,8 @@
 
 <h3>pyokta-aws-cli-assume-role</h3>
 
-[![pypi version](https://pypi.in/v/pyokta-aws-cli-assume-role)](https://pypi.org/project/pyokta-aws-cli-assume-role)
-[![pypi downloads](https://pypi.in/d/pyokta-aws-cli-assume-role)](https://pypi.org/project/pyokta-aws-cli-assume-role)
+[![pypi version](https://img.shields.io/pypi/v/pyokta-aws-cli-assume-role.svg)](https://pypi.org/project/pyokta-aws-cli-assume-role)
+[![pypi downloads](https://img.shields.io/pypi/dm/pyokta-aws-cli-assume-role.svg)](https://pypi.org/project/pyokta-aws-cli-assume-role)
 [![source](https://img.shields.io/badge/source-github-teal.svg)](https://shields.io/)
 [![build](https://travis-ci.org/mijdavis2/pyokta-aws-cli-assume-role.svg?branch=master)](https://travis-ci.org/mijdavis2/pyokta-aws-cli-assume-role) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
