@@ -1,3 +1,4 @@
+⚠️ This repo is no longer maintained. I recommend using [Granted](https://github.com/fwdcloudsec/granted) instead as it better supports multi-account and all MFAs ⚠️
 <div align="center">
 
 <a href="https://github.com/mijdavis2/pyokta-aws-cli-assume-role/tree/master">
